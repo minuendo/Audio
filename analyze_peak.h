@@ -30,6 +30,11 @@
 #include "Arduino.h"
 #include "AudioStream.h"
 
+typedef struct minmax_t {
+	float min;
+	float max;
+} peak_minmax;
+
 class AudioAnalyzePeak : public AudioStream
 {
 public:
@@ -43,6 +48,19 @@ public:
 		if (flag) new_output = false;
 		__enable_irq();
 		return flag;
+	}
+	void readMinMax(peak_minmax *mm) {
+		__disable_irq();
+		int min = min_sample;
+		int max = max_sample;
+		min_sample = 32767;
+		max_sample = -32768;
+		__enable_irq();
+		min = abs(min);
+		max = abs(max);
+		if (min > max) max = min;
+		mm->min = (float)min / 32767.0f;
+		mm->max = (float)max / 32767.0f;
 	}
 	float read(void) {
 		__disable_irq();

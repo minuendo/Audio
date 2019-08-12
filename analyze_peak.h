@@ -56,9 +56,8 @@ public:
 		min_sample = 32767;
 		max_sample = -32768;
 		__enable_irq();
-		min = abs(min);
+		min = min;
 		max = abs(max);
-		if (min > max) max = min;
 		mm->min = (float)min / 32767.0f;
 		mm->max = (float)max / 32767.0f;
 	}
